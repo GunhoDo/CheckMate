@@ -1,4 +1,5 @@
 package goldstamp.two.controller;
+import goldstamp.two.domain.Gender;
 
 import goldstamp.two.domain.Member;
 import goldstamp.two.service.MemberService;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,8 +85,19 @@ public class MemberApiController {
     @Data
     static class CreateMemberRequest {
         private String loginId;
-        private String name;
+      
         private String password;
+      
+        private String name;
+      
+        private Gender gender;
+
+        private LocalDate birthDay;
+
+        private double height;
+
+        private double weight;
+
     }
 
     @Data

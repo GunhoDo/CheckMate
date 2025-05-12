@@ -22,9 +22,11 @@ public class Medicine {
 
     private String medicineName;
 
-    private String medicineType;
+    private String efficient;
 
-    private String numDoses;
+    private String useMethod;
 
-    private String maxDoses;
+    private String acquire;
+
+    private String warning;
 }

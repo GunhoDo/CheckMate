@@ -5,8 +5,9 @@ import goldstamp.two.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.lang.IllegalArgumentException;
 import java.util.List;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -43,5 +44,14 @@ public class MemberService {
     public void updatePassword(long id, String passward) {
         Member member = memberRepository.findOne(id);
         member.setPassword(passward);
+    }
+
+    public void update(Long id, String name) {
+            Member member = memberRepository.findOne(id);
+            if (member == null) {
+                throw new IllegalArgumentException("Invalid member ID");
+            }
+            member.setName(name);  // name 수정
+            memberRepository.save(member);  // 수정된 멤버 저장
     }
 }

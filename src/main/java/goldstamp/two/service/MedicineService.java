@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import goldstamp.two.domain.Medicine;
 import goldstamp.two.domain.Prescription;
-import goldstamp.two.dto.MedicineDto;
+import goldstamp.two.dto.MedicineDTO;
 import goldstamp.two.repository.MedicineRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +71,13 @@ public class MedicineService {
         conn.disconnect();
 
         // Json Parsing 및 데이터 저장
-        List<MedicineDto> medicineDtoList = new ArrayList<>();
+        List<MedicineDTO> medicineDtoList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(sb.toString());
         JsonNode items = root.path("body").path("items");
 
         for (JsonNode itemNode : items) {
-            MedicineDto dto = new MedicineDto();
+            MedicineDTO dto = new MedicineDTO();
             dto.setMedicineName(itemNode.path("itemName").asText());
             dto.setEfficient(itemNode.path("efcyQesitm").asText());
             dto.setUseMethod(itemNode.path("useMethodQesitm").asText());
@@ -86,7 +86,7 @@ public class MedicineService {
             medicineDtoList.add(dto);
         }
         List<Medicine> medicines = new ArrayList<>();
-        for (MedicineDto dto : medicineDtoList) {
+        for (MedicineDTO dto : medicineDtoList) {
             Medicine medicine = new Medicine();
             medicine.setMedicineName(dto.getMedicineName());
             medicine.setEfficient(dto.getEfficient());

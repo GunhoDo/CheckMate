@@ -1,6 +1,7 @@
 package goldstamp.two.service;
 
 import goldstamp.two.domain.Member;
+import goldstamp.two.dto.MemberRequestDto;
 import goldstamp.two.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,12 +47,18 @@ public class MemberService {
         member.setPassword(passward);
     }
 
-    public void update(Long id, String name) {
-            Member member = memberRepository.findOne(id);
-            if (member == null) {
-                throw new IllegalArgumentException("Invalid member ID");
-            }
-            member.setName(name);  // name 수정
-            memberRepository.save(member);  // 수정된 멤버 저장
+    @Transactional
+    public void update(Long id, MemberRequestDto request) {
+        Member member = memberRepository.findOne(id);
+        if (member == null) {
+            throw new IllegalArgumentException("Invalid member ID");
+        }
+        if (request.getLoginId() != null) member.setLoginId(request.getLoginId());
+        if (request.getName() != null) member.setName(request.getName());
+        if (request.getPassword() != null) member.setPassword(request.getPassword());
+        if (request.getGender() != null) member.setGender(request.getGender());
+        if (request.getBirthDay() != null) member.setBirthDay(request.getBirthDay());
+        if (request.getHeight() != 0) member.setHeight(request.getHeight());
+        if (request.getWeight() != 0) member.setWeight(request.getWeight());
     }
 }

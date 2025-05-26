@@ -1,7 +1,7 @@
 package goldstamp.two.controller;
 import goldstamp.two.domain.Member;
-import goldstamp.two.dto.MemberRequest;
-import goldstamp.two.dto.MemberResponse;
+import goldstamp.two.dto.MemberRequestDto;
+import goldstamp.two.dto.MemberResponseDto;
 import goldstamp.two.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-public class MemberApiController {
+public class MemberController {
 
     private final MemberService memberService; //서비스 계층을 통해 비즈니스 로직 수행
 
@@ -30,7 +30,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/members")
-    public CreateMemberResponse saveMember(@RequestBody @Valid MemberRequest request) {
+    public CreateMemberResponse saveMember(@RequestBody @Valid MemberRequestDto request) {
         Member member = new Member();
         member.setLoginId(request.getLoginId());
         member.setName(request.getName());
@@ -45,12 +45,12 @@ public class MemberApiController {
 
     //회원 수정
     @PatchMapping("/members/{id}")
-    public MemberResponse updateMemberResponse(
+    public MemberResponseDto updateMemberResponse(
             @PathVariable("id") Long id,
-            @RequestBody @Valid MemberRequest request) {
+            @RequestBody @Valid MemberRequestDto request) {
         memberService.update(id, request);
         Member findMember = memberService.findOne(id);
-        return new MemberResponse(
+        return new MemberResponseDto(
                 findMember.getId(),
                 findMember.getLoginId(),
                 findMember.getName(),
@@ -60,13 +60,12 @@ public class MemberApiController {
                 findMember.getWeight()
         );
     }
-
+    //회원 조회
     @GetMapping("/members")
-    //회원 전체 조회
     public Result members() {
         List<Member> findMembers = memberService.findMembers();
-        List<MemberResponse> collect = findMembers.stream()
-                .map(m -> new MemberResponse(
+        List<MemberResponseDto> collect = findMembers.stream()
+                .map(m -> new MemberResponseDto(
                         m.getId(),
                         m.getLoginId(),
                         m.getName(),

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicineDTO {
+public class MedicineDto {
     private String medicineName;
 
     private String efficient;

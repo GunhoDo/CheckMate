@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.User;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MemberDTO extends User {
+public class MemberDto extends User {
 
     private String loginId, password, name;
 
@@ -14,7 +14,7 @@ public class MemberDTO extends User {
 
     private List<String> roleNames = new ArrayList<>(); //권한 이름 목록
 
-    public MemberDTO(String loginId, String password, String name, Boolean social, List<String> roleNames) {
+    public MemberDto(String loginId, String password, String name, Boolean social, List<String> roleNames) {
         super(
                 loginId,
                 password,

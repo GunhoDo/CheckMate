@@ -1,7 +1,7 @@
 package goldstamp.two.security.filter;
 
 import com.google.gson.Gson;
-import goldstamp.two.dto.MemberDTO;
+import goldstamp.two.dto.MemberDto;
 import goldstamp.two.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -59,7 +59,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                     String name = (String) claims.get("name");
                     Boolean social = (Boolean) claims.get("social");
                     List<String> roleNames = (List<String>) claims.get("roleNames");
-                    MemberDTO memberDTO = new MemberDTO(loginId, password, name, social.booleanValue(),
+                    MemberDto memberDTO = new MemberDto(loginId, password, name, social.booleanValue(),
                             roleNames);
                     log.info("-----------------------------------");
                     log.info(memberDTO);

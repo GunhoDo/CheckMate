@@ -1,7 +1,7 @@
 package goldstamp.two.security;
 
 import goldstamp.two.domain.Member;
-import goldstamp.two.dto.MemberDTO;
+import goldstamp.two.dto.MemberDto;
 import goldstamp.two.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Not Found");
         }
 
-        MemberDTO memberDTO = new MemberDTO(
+        MemberDto memberDTO = new MemberDto(
                 member.getLoginId(),
                 member.getPassword(),
                 member.getName(),

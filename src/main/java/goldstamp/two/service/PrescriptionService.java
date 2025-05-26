@@ -1,10 +1,7 @@
 package goldstamp.two.service;
 
 import goldstamp.two.domain.*;
-import goldstamp.two.repository.DiseaseRepository;
-import goldstamp.two.repository.MedicineRepository;
-import goldstamp.two.repository.MemberRepository;
-import goldstamp.two.repository.PrescriptionRepository;
+import goldstamp.two.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PrescriptionService {
 
-    private final MemberRepository memberRepository;
+    private final MemberRepositoryClass memberRepository;
     private final DiseaseRepository diseaseRepository;
     private final MedicineRepository medicineRepository;
     private final PrescriptionRepository prescriptionRepository;

@@ -1,7 +1,7 @@
 package goldstamp.two.security.handler;
 
 import com.google.gson.Gson;
-import goldstamp.two.dto.MemberDTO;
+import goldstamp.two.dto.MemberDto;
 import goldstamp.two.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authentication);
         log.info("----------------------");
 
-        MemberDTO memberDTO = (MemberDTO) authentication.getPrincipal();
+        MemberDto memberDTO = (MemberDto) authentication.getPrincipal();
 
         Map<String, Object> claims = memberDTO.getClaims();
 

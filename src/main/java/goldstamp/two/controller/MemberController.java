@@ -48,7 +48,7 @@ public class MemberController {
     public MemberResponseDto updateMemberResponse(
             @PathVariable("id") Long id,
             @RequestBody @Valid MemberRequestDto request) {
-        memberService.update(id, request);
+        memberService.updateMember(id, request);
         Member findMember = memberService.findOne(id);
         return new MemberResponseDto(
                 findMember.getId(),

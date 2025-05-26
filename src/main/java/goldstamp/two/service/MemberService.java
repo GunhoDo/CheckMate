@@ -1,7 +1,8 @@
 package goldstamp.two.service;
 
 import goldstamp.two.domain.Member;
-import goldstamp.two.repository.MemberRepository; // MemberRepositoryImpl 대신 MemberRepository 인터페이스 import
+import goldstamp.two.dto.MemberRequestDto;
+import goldstamp.two.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,16 +42,12 @@ public class MemberService {
     }
 
     public Member findOne(long id) {
-        // JpaRepository는 findById를 반환하며 Optional을 반환합니다.
-        // Optional.orElseThrow()를 사용하여 값이 없으면 예외를 발생시킬 수 있습니다.
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + id));
+        return memberRepository.findById(id);
     }
 
     @Transactional
     public void updatePassword(long id, String passward) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + id));
+        Member member = memberRepository.findById(id);
         member.setPassword(passward);
         // @Transactional이 있으므로 save 호출 없이 더티 체킹으로 자동 반영됩니다.
     }
@@ -62,6 +59,20 @@ public class MemberService {
         // if (member == null) { ... } 대신 Optional의 orElseThrow 사용
         member.changeName(name); // Member 클래스에 정의된 changeNickname 메서드를 사용
 
+=======
+    @Transactional
+    public void update(Long id, MemberRequestDto request) {
+        Member member = memberRepository.findById(id);
+        if (member == null) {
+            throw new IllegalArgumentException("Invalid member ID");
+        }
+        if (request.getLoginId() != null) member.setLoginId(request.getLoginId());
+        if (request.getName() != null) member.setName(request.getName());
+        if (request.getPassword() != null) member.setPassword(request.getPassword());
+        if (request.getGender() != null) member.setGender(request.getGender());
+        if (request.getBirthDay() != null) member.setBirthDay(request.getBirthDay());
+        if (request.getHeight() != 0) member.setHeight(request.getHeight());
+        if (request.getWeight() != 0) member.setWeight(request.getWeight());
     }
 }
 

@@ -18,7 +18,9 @@ public class Disease {
     @OneToOne(mappedBy = "disease", fetch = FetchType.LAZY)
     private Prescription prescription;
 
+    @Column(length = 1000)
     private String name;
 
+    @Column(length = 3000)
     private String explain;
 }

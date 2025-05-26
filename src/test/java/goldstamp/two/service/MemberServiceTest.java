@@ -31,6 +31,7 @@ public class MemberServiceTest {
         Assertions.assertEquals(member.getLoginId(), foundMember.getLoginId()); // 객체 비교 대신 필드 비교 권장
         // Assertions.assertEquals(member, foundMember); // 이 비교는 객체 동일성(메모리 주소)을 비교할 수 있어 실패할 수 있습니다.
         // 필드 값 비교가 더 정확합니다.
+        Assertions.assertEquals(member, memberRepository.findById(savedId));
     }
 
     @Test

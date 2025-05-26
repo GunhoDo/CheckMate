@@ -24,7 +24,7 @@ public class Member {
 
     @Column(unique = true, nullable = false)
     private String loginId; // 이메일이나 사용자 ID
-
+  
     private String name; //사용자 닉네임
 
     @JsonIgnore
@@ -76,9 +76,6 @@ public class Member {
     private double height;
 
     private double weight;
-
-
-
 }
 
 

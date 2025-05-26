@@ -38,18 +38,18 @@ public class MemberService {
     }
 
     public Member findOne(long id) {
-        return memberRepository.findOne(id);
+        return memberRepository.findById(id);
     }
 
     @Transactional
     public void updatePassword(long id, String passward) {
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id);
         member.setPassword(passward);
     }
 
     @Transactional
     public void update(Long id, MemberRequestDto request) {
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id);
         if (member == null) {
             throw new IllegalArgumentException("Invalid member ID");
         }

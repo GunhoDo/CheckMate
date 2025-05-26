@@ -24,24 +24,24 @@ public class PrescriptionService {
     private final MedicineRepository medicineRepository;
     private final PrescriptionRepository prescriptionRepository;
 
-    @Transactional
-    public Long createPrescriptionByDiseaseName(Long memberId, String diseaseName) {
-
-        // 1. 멤버 조회
-        Member member = memberRepository.findOne(memberId);
-
-        // 2. 질병 조회
-        Disease disease = diseaseRepository.findByName(diseaseName);
-
-        // 3. 해당 질병 이름이 들어간 약 효능으로 약 조회
-        List<Medicine> medicines = medicineRepository.findByEfficientContaining(disease.getName());
-
-        // 4. 처방전 생성 (정적 팩토리 메서드 사용)
-        Prescription prescription = Prescription.createPrescription(member, disease, medicines.toArray(new Medicine[0]));
-
-        // 5. 저장
-        prescriptionRepository.save(prescription);
-
-        return prescription.getId();
-    }
+//    @Transactional
+//    public Long createPrescriptionByDiseaseName(Long memberId, String diseaseName) {
+//
+//        // 1. 멤버 조회
+//        Member member = memberRepository.findOne(memberId);
+//
+//        // 2. 질병 조회
+//        Disease disease = diseaseRepository.findByName(diseaseName);
+//
+//        // 3. 해당 질병 이름이 들어간 약 효능으로 약 조회
+//        List<Medicine> medicines = medicineRepository.findByEfficientContaining(disease.getName());
+//
+//        // 4. 처방전 생성 (정적 팩토리 메서드 사용)
+//        Prescription prescription = Prescription.createPrescription(member, disease, medicines.toArray(new Medicine[0]));
+//
+//        // 5. 저장
+//        prescriptionRepository.save(prescription);
+//
+//        return prescription.getId();
+//    }
 }

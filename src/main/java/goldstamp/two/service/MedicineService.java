@@ -75,7 +75,7 @@ public class MedicineService {
 
         List<MedicineDto> medicineDtoList = new ArrayList<>();
         for (JsonNode itemNode : items) {
-            MedicineDto dto = new MedicineDto();
+            MedicineDTO dto = new MedicineDTO();
             dto.setMedicineName(itemNode.path("itemName").asText());
             dto.setEfficient(itemNode.path("efcyQesitm").asText());
             dto.setUseMethod(itemNode.path("useMethodQesitm").asText());
@@ -89,7 +89,7 @@ public class MedicineService {
         }
 
         List<Medicine> medicines = new ArrayList<>();
-        for (MedicineDto dto : medicineDtoList) {
+        for (MedicineDTO dto : medicineDtoList) {
             Medicine medicine = new Medicine();
             medicine.setMedicineName(dto.getMedicineName());
             medicine.setEfficient(dto.getEfficient());

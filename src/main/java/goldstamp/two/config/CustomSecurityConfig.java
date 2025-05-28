@@ -44,9 +44,11 @@ public class CustomSecurityConfig {
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
 
         http.formLogin(config -> {
-            config.loginPage("/api/member/login");
+            config.loginPage("/members/login");
+            config.usernameParameter("loginId");
             config.successHandler(new APILoginSuccessHandler());
             config.failureHandler(new APILoginFailHandler());
+            config.permitAll();
         });
 
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -55,19 +57,19 @@ public class CustomSecurityConfig {
 
             config.accessDeniedHandler(new CustomAccessDeniedHandler());
                 });
-//        http.authorizeHttpRequests(authorize -> authorize
-//                // 로그인 및 회원가입 관련 경로들은 인증 없이도 접근 가능
-//                .requestMatchers("/api/member/login").permitAll() // 로그인 POST 요청
-//                .requestMatchers("/api/member/join").permitAll() // 회원가입 POST 요청
-//                .requestMatchers("/").permitAll() // 루트 경로 (HomeController의 home())
-//                .requestMatchers("/error").permitAll() // 에러 페이지
-//
-//                // 특정 역할만 접근 가능한 경로 추가 예정
-//                .requestMatchers("/admin/**").hasRole("ADMIN") // /admin 으로 시작하는 모든 요청은 ADMIN 권한 필요
-//
-//                // 그 외 모든 요청은 인증된 사용자만 접근 가능하도록 설정
-//                .anyRequest().authenticated()
-//        );
+        http.authorizeHttpRequests(authorize -> authorize
+                // 로그인 및 회원가입 관련 경로들은 인증 없이도 접근 가능
+                .requestMatchers("/members/login").permitAll() // 로그인 POST 요청
+                .requestMatchers("/members/join").permitAll() // 회원가입 POST 요청
+                .requestMatchers("/").permitAll() // 루트 경로 (HomeController의 home())
+                .requestMatchers("/error").permitAll() // 에러 페이지
+
+                // 특정 역할만 접근 가능한 경로 추가 예정
+                .requestMatchers("/admin/**").hasRole("ADMIN") // /admin 으로 시작하는 모든 요청은 ADMIN 권한 필요
+
+                // 그 외 모든 요청은 인증된 사용자만 접근 가능하도록 설정
+                .anyRequest().authenticated()
+        );
 
         //csrf 기능 x
         return http.build();

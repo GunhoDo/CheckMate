@@ -29,7 +29,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/members")
+    @PostMapping("/members/join")
     public CreateMemberResponse saveMember(@RequestBody @Valid MemberRequestDto request) {
         Member member = new Member();
         member.setLoginId(request.getLoginId());

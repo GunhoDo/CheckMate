@@ -153,7 +153,7 @@ public class MemberController {
     }
 
     @PatchMapping("/members/{id}")
-    public MemberResponseDto updateMemberResponse(
+    public MemberResponseDto updateMember(
             @PathVariable("id") Long id,
             @RequestBody @Valid MemberRequestDto request) {
         memberService.updateMember(id, request);

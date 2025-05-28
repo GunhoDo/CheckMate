@@ -5,12 +5,12 @@ import goldstamp.two.domain.Member;
 import goldstamp.two.domain.MemberRole;
 import goldstamp.two.dto.MemberRequestDto;
 import goldstamp.two.repository.MemberRepository;
-import goldstamp.two.repository.MemberRepositoryClass; // MemberRepositoryClass import 추가
+import goldstamp.two.repository.MemberRepositoryClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder; // PasswordEncoder import
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ public class MemberServiceTest {
 
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
-    @Autowired MemberRepositoryClass memberRepositoryClass; // MemberRepositoryClass 주입
+    @Autowired MemberRepositoryClass memberRepositoryClass;
     @Autowired PasswordEncoder passwordEncoder; // PasswordEncoder 주입
 
     @Test
@@ -29,7 +29,8 @@ public class MemberServiceTest {
         //given
         Member member = new Member();
         member.setLoginId("kim");
-        member.setPassword("12345"); // 비밀번호 설정
+        String password = "12345"; // 평문 비밀번호
+        member.setPassword(password); // MemberService에서 암호화될 예정
         member.addRole(MemberRole.USER); // 역할 추가 (필수)
 
         //when
@@ -38,8 +39,8 @@ public class MemberServiceTest {
         //then
         Member foundMember = memberService.findOne(savedId);
         Assertions.assertEquals(member.getLoginId(), foundMember.getLoginId());
-        // 비밀번호는 인코딩되어 저장되므로 직접 비교가 아닌, 서비스에서 조회된 멤버의 패스워드가 null이 아닌지 정도만 확인
-        Assertions.assertNotNull(foundMember.getPassword());
+        // 저장된 비밀번호가 암호화되었는지 확인 (평문 비밀번호와 암호화된 비밀번호 비교)
+        Assertions.assertTrue(passwordEncoder.matches(password, foundMember.getPassword()));
     }
 
     @Test
@@ -69,16 +70,17 @@ public class MemberServiceTest {
         //given
         Member member1 = new Member();
         member1.setLoginId("kim");
-        member1.setPassword(passwordEncoder.encode("12345")); // 비밀번호 인코딩하여 설정
+        String password = "12345";
+        member1.setPassword(password); // 서비스에서 암호화
         member1.addRole(MemberRole.USER);
-        long savedId = memberService.join(member1);
+        long savedId = memberService.join(member1); // 회원 가입
 
         //when
         String newPassword = "newpassword";
-        memberService.updatePassword(savedId, passwordEncoder.encode(newPassword)); // 새 비밀번호도 인코딩
+        memberService.updatePassword(savedId, newPassword); // 서비스에서 새 비밀번호 암호화
 
         //then
-        Member member2 = memberService.findOne(savedId);
+        Member member2 = memberService.findOne(savedId); // 변경된 회원 정보 조회
         // 인코딩된 비밀번호는 직접 비교할 수 없으므로, PasswordEncoder의 matches 메서드를 사용
         Assertions.assertTrue(passwordEncoder.matches(newPassword, member2.getPassword()));
     }
@@ -88,18 +90,18 @@ public class MemberServiceTest {
         //given
         Member member = new Member();
         member.setLoginId("testuser");
-        member.setPassword(passwordEncoder.encode("password123")); // 비밀번호 인코딩하여 설정
+        member.setPassword("password123"); // 서비스에서 암호화
         member.changeName("oldname");
         member.addRole(MemberRole.USER);
-        long savedId = memberService.join(member);
+        long savedId = memberService.join(member); // 회원 가입
 
         //when
         String newNickname = "newname";
-        memberService.update(savedId, newNickname);
+        memberService.update(savedId, newNickname); // 닉네임 변경 서비스 호출
 
         //then
-        Member updatedMember = memberService.findOne(savedId);
-        Assertions.assertEquals(newNickname, updatedMember.getName());
+        Member updatedMember = memberService.findOne(savedId); // 변경된 회원 정보 조회
+        Assertions.assertEquals(newNickname, updatedMember.getName()); // 변경된 닉네임과 일치하는지 확인
     }
 
     @Test
@@ -107,7 +109,8 @@ public class MemberServiceTest {
         // given
         Member member = new Member();
         member.setLoginId("initialId");
-        member.setPassword(passwordEncoder.encode("initialPass"));
+        String password = "initialPass";
+        member.setPassword(password); // 서비스에서 암호화
         member.setName("Initial Name");
         member.setGender(Gender.MAN);
         member.setBirthDay(LocalDate.of(2000, 1, 1));
@@ -120,20 +123,22 @@ public class MemberServiceTest {
         MemberRequestDto updateRequest = new MemberRequestDto();
         updateRequest.setName("Updated Name");
         updateRequest.setHeight(175.5);
-        updateRequest.setGender(Gender.WOMAN); // Change gender
+        updateRequest.setGender(Gender.WOMAN); // Gender 변경
+        String updatedPassword = "newUpdatedPass";
+        updateRequest.setPassword(updatedPassword); // 비밀번호도 업데이트 요청
 
         memberService.updateMember(savedId, updateRequest);
 
         // then
         Member updatedMember = memberService.findOne(savedId);
 
-        // Verify only updated fields are changed, others remain the same
-        Assertions.assertEquals("initialId", updatedMember.getLoginId()); // loginId should not change
-        Assertions.assertTrue(passwordEncoder.matches("initialPass", updatedMember.getPassword())); // password should not change
+        // Verify updated fields
+        Assertions.assertEquals("initialId", updatedMember.getLoginId()); // loginId는 변경 요청에 없으므로 그대로
         Assertions.assertEquals("Updated Name", updatedMember.getName());
         Assertions.assertEquals(Gender.WOMAN, updatedMember.getGender());
         Assertions.assertEquals(LocalDate.of(2000, 1, 1), updatedMember.getBirthDay());
-        Assertions.assertEquals(175.5, updatedMember.getHeight(), 0.001); // Use delta for double comparison
-        Assertions.assertEquals(60.0, updatedMember.getWeight(), 0.001); // weight should not change
+        Assertions.assertEquals(175.5, updatedMember.getHeight(), 0.001); // double 비교 시 오차 허용
+        Assertions.assertEquals(60.0, updatedMember.getWeight(), 0.001); // weight는 변경 요청에 없으므로 그대로
+        Assertions.assertTrue(passwordEncoder.matches(updatedPassword, updatedMember.getPassword())); // 업데이트된 비밀번호 확인
     }
 }

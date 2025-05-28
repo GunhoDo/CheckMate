@@ -1,11 +1,13 @@
 package goldstamp.two.dto;
 
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 public class MemberDto extends User {
 
     private Long id; // ID 필드 추가

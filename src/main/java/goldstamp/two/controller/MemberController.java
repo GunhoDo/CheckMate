@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -188,5 +189,31 @@ public class MemberController {
     @AllArgsConstructor
     static class Result<T> {
         private T data;
+    }
+    @DeleteMapping("/members/{id}")
+    public ResponseEntity<String> deleteMember(
+            @PathVariable("id") Long memberIdToDelete,
+            @AuthenticationPrincipal MemberDto currentUser // 현재 로그인한 사용자 정보 (JWT 필터에서 SecurityContextHolder에 저장된 정보)
+    ) {
+        // 1. 요청을 보낸 사용자가 해당 멤버 ID의 소유자인지 확인 (보안 검증)
+        // JWT의 'id' 클레임과 URL 경로의 'id'가 일치하는지 확인합니다.
+        if (!currentUser.getId().equals(memberIdToDelete)) {
+            // 본인 계정이 아닌 다른 계정 삭제 시도 시 403 Forbidden 반환
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to delete this member.");
+        }
+
+        try {
+            memberService.deleteMember(memberIdToDelete);
+            log.info("Member deleted successfully: ID={}", memberIdToDelete);
+            return ResponseEntity.ok("Member with ID " + memberIdToDelete + " has been deleted successfully.");
+            // 혹은 204 No Content를 반환하여 성공을 알릴 수도 있습니다.
+            // return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            log.warn("Member deletion failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error deleting member with ID {}: {}", memberIdToDelete, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during member deletion.");
+        }
     }
 }

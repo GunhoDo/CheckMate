@@ -75,5 +75,14 @@ public class MemberService {
         if (request.getHeight() != 0) member.setHeight(request.getHeight());
         if (request.getWeight() != 0) member.setWeight(request.getWeight());
     }
+    // 회원 탈퇴
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepositoryClass.findById(id);
+        if (member == null) {
+            throw new IllegalArgumentException("Invalid member ID");
+        }
+        memberRepository.deleteById(id);
+    }
 }
 

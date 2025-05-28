@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/diseases")
 @RequiredArgsConstructor
 public class DiseaseController {
+
     private final DiseaseService diseaseService;
 
     @GetMapping

@@ -51,12 +51,12 @@ public class CustomSecurityConfig {
 
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
 
-         //http.formLogin 제거
-         http.formLogin(config -> {
-             config.loginPage("/members/login");
-             config.successHandler(new APILoginSuccessHandler());
-             config.failureHandler(new APILoginFailHandler());
-         });
+//         //http.formLogin 제거
+//         http.formLogin(config -> {
+//             config.loginPage("/members/login");
+//             config.successHandler(new APILoginSuccessHandler());
+//             config.failureHandler(new APILoginFailHandler());
+//         });
 
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 

@@ -26,7 +26,6 @@ public class DiseaseService {
     @Autowired
     DiseaseRepository diseaseRepository;
 
-
     public List<Disease> searchDiseases(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return new ArrayList<>(); // 빈 문자열이나 null이 오면 빈 리스트 반환

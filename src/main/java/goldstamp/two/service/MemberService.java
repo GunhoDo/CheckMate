@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.IllegalArgumentException;
 import java.util.List;
-import java.util.Optional; // findById 사용을 위해 Optional import
 
 @Service
 @Transactional(readOnly = true)
@@ -33,6 +32,7 @@ public class MemberService {
         // --------------------------
 
         member.addRole(MemberRole.USER);
+
 
         memberRepositoryClass.save(member); // JpaRepository의 save 메서드 사용
         return member.getId();
@@ -61,7 +61,9 @@ public class MemberService {
     @Transactional
     public void updatePassword(long id, String password) {
         Member member = memberRepositoryClass.findById(id);
+
         member.setPassword(password);
+
         // @Transactional이 있으므로 save 호출 없이 더티 체킹으로 자동 반영됩니다.
         // --- 비밀번호 암호화 ---
         String encodedPassword = passwordEncoder.encode(password); // 파라미터로 받은 평문 비밀번호를 인코딩
@@ -85,17 +87,28 @@ public class MemberService {
         }
         if (request.getLoginId() != null) member.setLoginId(request.getLoginId());
         if (request.getName() != null) member.setName(request.getName());
+
         // --- 비밀번호 암호화 수정 ---
         if (request.getPassword() != null && !request.getPassword().isEmpty()) { // 새 비밀번호가 제공되었는지 확인
             String encodedPassword = passwordEncoder.encode(request.getPassword()); // DTO에서 받은 새 평문 비밀번호를 인코딩
             member.setPassword(encodedPassword);
         }
         // --------------------------
+
         if (request.getGender() != null) member.setGender(request.getGender());
         if (request.getBirthDay() != null) member.setBirthDay(request.getBirthDay());
         if (request.getHeight() != 0) member.setHeight(request.getHeight());
         if (request.getWeight() != 0) member.setWeight(request.getWeight());
 
+    }
+    // 회원 탈퇴
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepositoryClass.findById(id);
+        if (member == null) {
+            throw new IllegalArgumentException("Invalid member ID");
+        }
+        memberRepository.deleteById(id);
     }
 }
 

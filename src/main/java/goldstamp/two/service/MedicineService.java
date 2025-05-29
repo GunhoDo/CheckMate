@@ -7,7 +7,6 @@ import goldstamp.two.dto.MedicineDto;
 import goldstamp.two.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +22,13 @@ public class MedicineService {
 
     @Autowired
     private MedicineRepository medicineRepository;
+
+    public List<Medicine> searchMedicines(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>(); // 빈 문자열이나 null이 오면 빈 리스트 반환
+        }
+        return medicineRepository.findByMedicineNameContainingIgnoreCase(keyword); //
+    }
 
     public void saveMedicinesAll() throws IOException {
         Integer pageNo = 1;

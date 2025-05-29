@@ -28,8 +28,10 @@ public class Prescription {
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<PrescriptionMedicine> prescriptionMedicines = new ArrayList<>();
 
+    @Column(length = 1000) // Name 필드 길이도 Disease의 name 필드와 일치시키는 것이 좋습니다.
     private String name;
 
+    @Column(length = 3000) // DESCRIPTION 컬럼 길이 3000으로 수정
     private String description;
 
     public void setMember(Member member) {

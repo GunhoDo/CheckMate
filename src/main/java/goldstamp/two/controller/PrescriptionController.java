@@ -1,3 +1,4 @@
+// front + back/back/src/main/java/goldstamp/two/controller/PrescriptionController.java
 package goldstamp.two.controller;
 
 import goldstamp.two.domain.Prescription; // Prescription 도메인 추가
@@ -23,11 +24,9 @@ public class PrescriptionController {
     }
 
     @PostMapping("/empty") // 새로운 엔드포인트 추가
-    public ResponseEntity<String> createEmptyPrescription(@PathVariable Long memberId) {
+    public ResponseEntity<Long> createEmptyPrescription(@PathVariable Long memberId) { // 반환 타입을 Long으로 변경
         Long prescriptionId = prescriptionService.createEmptyPrescription(memberId);
-        // 생성된 진단서 ID를 포함하여 새로운 약이나 질병을 입력할 수 있는 페이지로 리다이렉션할 URL 반환
-        String redirectUrl = "/members/" + memberId + "/prescriptions/" + prescriptionId + "/edit";
-        return ResponseEntity.ok(redirectUrl);
+        return ResponseEntity.ok(prescriptionId); // prescriptionId만 반환
     }
 
     // 진단서 수정 페이지를 위한 GET 엔드포인트 (진단서 상세 정보 반환)

@@ -1,7 +1,6 @@
 package goldstamp.two.service;
 
 import goldstamp.two.domain.Member;
-import goldstamp.two.domain.MemberRole;
 import goldstamp.two.dto.MemberRequestDto;
 import goldstamp.two.repository.MemberRepository;
 import goldstamp.two.repository.MemberRepositoryClass;
@@ -25,15 +24,7 @@ public class MemberService {
     @Transactional
     public long join(Member member) {
         validateDuplicateMemberID(member); //중복 회원 아이디 검증
-
-        // --- 비밀번호 암호화 추가 ---
-        String encodedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encodedPassword);
-        // --------------------------
-
-        member.addRole(MemberRole.USER);
-
-
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
         memberRepositoryClass.save(member); // JpaRepository의 save 메서드 사용
         return member.getId();
     }
@@ -59,16 +50,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void updatePassword(long id, String password) {
+    public void updatePassword(long id, String passward) {
         Member member = memberRepositoryClass.findById(id);
-
-        member.setPassword(password);
-
+        member.setPassword(passwordEncoder.encode(passward));
         // @Transactional이 있으므로 save 호출 없이 더티 체킹으로 자동 반영됩니다.
-        // --- 비밀번호 암호화 ---
-        String encodedPassword = passwordEncoder.encode(password); // 파라미터로 받은 평문 비밀번호를 인코딩
-        member.setPassword(encodedPassword);
-        // --------------------------
     }
 
     @Transactional // 이 어노테이션은 여전히 중요합니다!
@@ -76,7 +61,6 @@ public class MemberService {
         Member member = memberRepositoryClass.findById(id);// findById 사용
         // if (member == null) { ... } 대신 Optional의 orElseThrow 사용
         member.changeName(name); // Member 클래스에 정의된 changeNickname 메서드를 사용
-
     }
 
     @Transactional
@@ -87,19 +71,11 @@ public class MemberService {
         }
         if (request.getLoginId() != null) member.setLoginId(request.getLoginId());
         if (request.getName() != null) member.setName(request.getName());
-
-        // --- 비밀번호 암호화 수정 ---
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) { // 새 비밀번호가 제공되었는지 확인
-            String encodedPassword = passwordEncoder.encode(request.getPassword()); // DTO에서 받은 새 평문 비밀번호를 인코딩
-            member.setPassword(encodedPassword);
-        }
-        // --------------------------
-
+        if (request.getPassword() != null) member.setPassword(passwordEncoder.encode(request.getPassword()));
         if (request.getGender() != null) member.setGender(request.getGender());
         if (request.getBirthDay() != null) member.setBirthDay(request.getBirthDay());
         if (request.getHeight() != 0) member.setHeight(request.getHeight());
         if (request.getWeight() != 0) member.setWeight(request.getWeight());
-
     }
     // 회원 탈퇴
     @Transactional

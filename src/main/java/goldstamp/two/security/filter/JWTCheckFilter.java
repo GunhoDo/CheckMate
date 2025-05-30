@@ -28,11 +28,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         log.info("check uri----------"+path);
 
-
         // `/members/login`, `/members` (회원가입), `/members/{id}/refresh` 경로를 필터링 건너뛰도록 설정
         // `members/**`는 `/members/`로 시작하는 모든 경로를 포함합니다.
         if(path.startsWith("/members/login") || path.equals("/members") || path.startsWith("/members/") && path.endsWith("/refresh") ){
-
             return true;
         }
 

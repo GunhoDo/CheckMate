@@ -41,6 +41,10 @@ public class MemberRepositoryTests {
 
             memberRepository.save(member);
         }
+    }
+    @Test
+    public void testRead() {
+
         String email = "user9@aaa.com";
 
         Member member = memberRepository.getWithRoles(email); //자동으로 조인처리가 되었는지 확인

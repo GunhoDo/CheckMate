@@ -44,7 +44,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/members/join")
+    @PostMapping("/members")
     public CreateMemberResponse saveMember(@RequestBody @Valid MemberRequestDto request) {
         Member member = new Member();
         member.setLoginId(request.getLoginId());

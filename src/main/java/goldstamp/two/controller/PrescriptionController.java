@@ -2,12 +2,15 @@
 package goldstamp.two.controller;
 
 import goldstamp.two.domain.Prescription; // Prescription 도메인 추가
+import goldstamp.two.dto.MemberDto;
 import goldstamp.two.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List; // List 임포트 추가
+import java.util.List;
 
 @RestController
 @RequestMapping("/members/{memberId}/prescriptions")
@@ -73,4 +76,27 @@ public class PrescriptionController {
         prescriptionService.addMedicineToPrescription(memberId, prescriptionId, medicineName);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/{prescriptionId}")
+    public ResponseEntity<String> deletePrescription(
+            @PathVariable("memberId") Long memberIdFromPath,
+            @PathVariable("prescriptionId") Long prescriptionIdToDelete,
+            @AuthenticationPrincipal MemberDto currentUser // 현재 로그인한 사용자 정보
+    ) {
+        // 1. 요청을 보낸 사용자가 해당 memberId의 소유자인지 확인
+        if (!currentUser.getId().equals(memberIdFromPath)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to delete prescriptions for this member.");
+        }
+        try {
+            prescriptionService.deletePrescription(prescriptionIdToDelete, memberIdFromPath);
+            return ResponseEntity.ok("Prescription with ID " + prescriptionIdToDelete + " has been deleted successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalAccessException e) {
+            // This exception should be thrown if the prescription does not belong to the member
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during prescription deletion.");
+        }
+    }
+
 }

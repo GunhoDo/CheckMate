@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -177,5 +178,21 @@ public class PrescriptionService {
 
         // 저장 (Transactional 어노테이션으로 인해 자동 더티 체킹되어 별도 save 호출 필요 없음)
         log.debug("트랜잭션 커밋 대기 중..."); // 디버그 로그 추가 (커밋 시점 예상)
+    }
+    @Transactional
+    public void deletePrescription(Long prescriptionId, Long memberId) throws IllegalAccessException {
+        log.info("deletePrescription 호출됨. prescriptionId: {}, memberId: {}", prescriptionId, memberId);
+
+        Prescription prescription = prescriptionRepository.findById(prescriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("Prescription not found with ID: " + prescriptionId));
+
+        // Verify that the prescription belongs to the member
+        if (!Objects.equals(prescription.getMember().getId(), memberId)) {
+            log.error("Attempt to delete prescription not owned by member. PrescriptionId: {}, MemberId: {}", prescriptionId, memberId);
+            throw new IllegalAccessException("You are not authorized to delete this prescription.");
+        }
+
+        prescriptionRepository.delete(prescription);
+        log.info("Prescription deleted successfully: ID={}", prescriptionId);
     }
 }

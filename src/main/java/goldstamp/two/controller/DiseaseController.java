@@ -1,6 +1,7 @@
 package goldstamp.two.controller;
 
 import goldstamp.two.domain.Disease;
+import goldstamp.two.dto.DiseaseDto; // DiseaseDto 클래스 임포트
 import goldstamp.two.service.DiseaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors; // Collectors 클래스 임포트
 
 @RestController
 @RequestMapping("/diseases")
@@ -19,12 +21,16 @@ public class DiseaseController {
     private final DiseaseService diseaseService;
 
     @GetMapping
-    public ResponseEntity<List<String>> autocompleteDiseases(@RequestParam("query") String query) {
+    public ResponseEntity<List<DiseaseDto>> autocompleteDiseases(@RequestParam("query") String query) {
         List<Disease> diseases = diseaseService.searchDiseases(query);
-        // 질병 객체 리스트에서 이름(name)만 추출하여 반환
-        List<String> diseaseNames = diseases.stream()
-                .map(Disease::getName)
-                .toList();
-        return ResponseEntity.ok(diseaseNames);
+        // 질병 객체 리스트를 DiseaseDto 리스트로 변환하여 반환
+        List<DiseaseDto> diseaseDtos = diseases.stream()
+                .map(disease -> DiseaseDto.builder()
+                        .id(disease.getId())
+                        .name(disease.getName())
+                        .explain(disease.getExplain())
+                        .build())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(diseaseDtos); // diseaseNames 대신 diseaseDtos 사용
     }
 }

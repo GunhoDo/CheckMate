@@ -1,4 +1,8 @@
 package goldstamp.two.dto;
+<<<<<<< HEAD
+
+=======
+>>>>>>> e94cf969e26ee792cce3f776e11456f3de18ff1f
 import goldstamp.two.domain.Disease;
 import goldstamp.two.domain.Medicine;
 import goldstamp.two.domain.PrescriptionMedicine;

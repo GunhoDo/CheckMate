@@ -16,7 +16,7 @@ public class PrescriptionMedicine {
     @Column(name = "prescription_medicine_id")
     private Long id;
 
-    @JsonIgnore
+    @JsonIgnore // Prescription과 PrescriptionMedicine은 양방향 관계이므로 한쪽에 JsonIgnore 추가
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id")
     private Prescription prescription;

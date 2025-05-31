@@ -1,6 +1,6 @@
 package goldstamp.two.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore; // JsonIgnore 임포트 추가
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List; // List 임포트 추가
+
 @RestController
 @RequestMapping("/members/{memberId}/prescriptions")
 @RequiredArgsConstructor
@@ -45,6 +47,12 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescription);
     }
 
+    // Member ID로 모든 처방전 조회 (새로 추가된 엔드포인트)
+    @GetMapping
+    public ResponseEntity<List<Prescription>> getPrescriptionsByMemberId(@PathVariable Long memberId) {
+        List<Prescription> prescriptions = prescriptionService.findPrescriptionsByMemberId(memberId);
+        return ResponseEntity.ok(prescriptions);
+    }
 
     @PatchMapping("/{prescriptionId}/disease")
     public ResponseEntity<Void> addDiseaseToPrescription(

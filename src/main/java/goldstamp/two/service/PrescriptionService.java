@@ -24,6 +24,7 @@ public class PrescriptionService {
     private final MedicineRepository medicineRepository;
     private final PrescriptionRepository prescriptionRepository;
 
+
     @Transactional
     public Long createEmptyPrescription(Long memberId) {
         log.info("createEmptyPrescription 호출됨. memberId: {}", memberId);
@@ -101,6 +102,12 @@ public class PrescriptionService {
         log.info("findOnePrescription 호출됨. prescriptionId: {}", prescriptionId);
         return prescriptionRepository.findById(prescriptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Prescription not found with ID: " + prescriptionId));
+    }
+
+    // Member ID로 모든 처방전 조회 (새로 추가)
+    public List<Prescription> findPrescriptionsByMemberId(Long memberId) {
+        log.info("findPrescriptionsByMemberId 호출됨. memberId: {}", memberId);
+        return prescriptionRepository.findByMember_Id(memberId);
     }
 
     @Transactional

@@ -1,5 +1,4 @@
 package goldstamp.two.dto;
-
 import goldstamp.two.domain.Disease;
 import goldstamp.two.domain.Medicine;
 import goldstamp.two.domain.PrescriptionMedicine;
